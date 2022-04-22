@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: make
-      run: make
+    - name: make -f Makefile
+      run: make run -f Makefile
 
 
