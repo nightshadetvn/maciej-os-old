@@ -13,7 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - run: apt install nasm gcc
+    - run: sudo apt update
+    - run: sudo apt install nasm gcc
     
     - name: Install dependencies
       run: make
