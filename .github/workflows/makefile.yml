@@ -12,10 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - run: sudo apt update
-    - run: sudo apt install nasm gcc
+    - name: Install depedencies
+      uses: actions/checkout@v3
+      run: sudo apt update
+      run: sudo apt install nasm
     
-    - name: Install dependencies
+    - name: Make the project
       run: make
+
+    -name: Clean all the files
+      run: make clean
       
