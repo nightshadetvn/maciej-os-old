@@ -13,7 +13,6 @@ jobs:
 
     steps:
     - name: Install depedencies
-      uses: actions/checkout@v3
       run: sudo apt update && sudo apt install nasm
     
     - name: Make the project
