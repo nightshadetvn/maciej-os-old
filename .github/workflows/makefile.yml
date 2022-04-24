@@ -20,6 +20,6 @@ jobs:
     - name: Make the project
       run: make
 
-    -name: Clean all the files
+    - name: Clean all the files
       run: make clean
       
