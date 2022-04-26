@@ -1,9 +1,8 @@
-// GCC provides these header files automatically
-// They give us access to useful things like fixed-width types
+//import mojej biblioteki do klawoatiry
 #include "keyboard_map.h"
 
 
-/* there are 25 lines each of 80 columns; each element takes 2 bytes */
+/*jest 25 lini po 80 kolumn; każdy element zajmuje 2 bajty */
 #define LINES 25
 #define COLUMNS_IN_LINE 80
 #define BYTES_FOR_EACH_ELEMENT 2
@@ -23,10 +22,10 @@ extern char read_port(unsigned short port);
 extern void write_port(unsigned short port, unsigned char data);
 extern void load_idt(unsigned long *idt_ptr);
 
-/* current cursor location */
+/* polozenie kursora */
 unsigned int current_row = 0;
 unsigned int current_line = 0;
-/* video memory begins at address 0xb8000 */
+/* pamiec video zaczyna sie na adresie 0xb8000 */
 char *vidptr = (char*)0xb8000;
 
 struct IDT_entry {
@@ -54,38 +53,38 @@ void idt_init(void)
 	IDT[0x21].type_attr = INTERRUPT_GATE;
 	IDT[0x21].offset_higherbits = (keyboard_address & 0xffff0000) >> 16;
 
-	/*     Ports
+	/*     porty
 	*	 PIC1	PIC2
-	*Command 0x20	0xA0
-	*Data	 0x21	0xA1
+	*komenda 0x20	0xA0
+	*dabe	 0x21	0xA1
 	*/
 
-	/* ICW1 - begin initialization */
+	/* ICW1 - initialization */
 	write_port(0x20 , 0x11);
 	write_port(0xA0 , 0x11);
 
-	/* ICW2 - remap offset address of IDT */
+	/* ICW2 - remap offset addres  IDT */
 	/*
-	* In x86 protected mode, we have to remap the PICs beyond 0x20 because
-	* Intel have designated the first 32 interrupts as "reserved" for cpu exceptions
+	* W x86 trybie chornionym, musimy zrempaowac PIC powyzej 0x20 poniewaz
+	* Intel dupa desing zrobil 32 interupty jako zarezerwowane dla wypadkow CPU
 	*/
 	write_port(0x21 , 0x20);
 	write_port(0xA1 , 0x28);
 
-	/* ICW3 - setup cascading */
+	/* ICW3 - cascading */
 	write_port(0x21 , 0x00);
 	write_port(0xA1 , 0x00);
 
-	/* ICW4 - environment info */
+	/* ICW4 - envt info */
 	write_port(0x21 , 0x01);
 	write_port(0xA1 , 0x01);
-	/* Initialization finished */
+	/* Initialization koniec */
 
 	/* mask interrupts */
 	write_port(0x21 , 0xff);
 	write_port(0xA1 , 0xff);
 
-	/* fill the IDT descriptor */
+	/* napelnij IDT descriptor */
 	idt_address = (unsigned long)IDT ;
 	idt_ptr[0] = (sizeof (struct IDT_entry) * IDT_SIZE) + ((idt_address & 0xffff) << 16);
 	idt_ptr[1] = idt_address >> 16 ;
@@ -95,7 +94,7 @@ void idt_init(void)
 
 void kb_init(void)
 {
-	/* 0xFD is 11111101 - enables only IRQ1 (keyboard)*/
+	/* 0xFD is 11111101 - wlacza tylko IRQ1 (klawa)*/
 	write_port(0x21 , 0xFD);
 }
 
@@ -158,7 +157,7 @@ void keyboard_handler_main(void)
 	write_port(0x20, 0x20);
 
 	status = read_port(KEYBOARD_STATUS_PORT);
-	/* Lowest bit of status will be set if buffer is not empty */
+	/* najmnieszy bit statusu bedzie ustawiony jezeli buffer nie jest pusty*/
 	if (status & 0x01) {
 		keycode = read_port(KEYBOARD_DATA_PORT);
 		if(keycode < 0)
